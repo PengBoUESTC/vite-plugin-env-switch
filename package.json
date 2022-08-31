@@ -1,0 +1,49 @@
+{
+  "name": "vite-plugin-env-switch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "rimraf -rf dist && tsc"
+  },
+  "keywords": [
+    "node",
+    "vite",
+    "vite-plugin"
+  ],
+  "lint-staged": {
+    "packages/*/{src, types}/**/*.{js,json,ts}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "author": "pengboUESTC",
+  "license": "ISC",
+  "homepage": "https://github.com/PengBoUESTC/vite-plugin-env-switch.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PengBoUESTC/vite-plugin-env-switch.git"
+  },
+  "peerDependencies": {
+    "vite": "2.9.9"
+  },
+  "devDependencies": {
+    "@types/node": "^18.7.14",
+    "@typescript-eslint/eslint-plugin": "^5.36.0",
+    "@typescript-eslint/parser": "^5.36.0",
+    "eslint": "^8.23.0",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.8.2",
+    "vite": "2.9.9",
+    "yorkie": "^2.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.2",
+    "picocolors": "^1.0.0"
+  }
+}
