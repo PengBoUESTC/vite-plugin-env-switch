@@ -5,8 +5,8 @@ const vite_1 = require("vite");
 const path_1 = require("path");
 const dotenv = require('dotenv');
 // 获取环境变量
-function loadEnv(mode) {
-    const basePath = (0, path_1.resolve)(__dirname, `.env${mode ? `.${mode}` : ``}`);
+function loadEnv(path, mode) {
+    const basePath = (0, path_1.resolve)(path, `.env${mode ? `.${mode}` : ``}`);
     const localPath = `${basePath}.local`;
     const load = envPath => {
         const env = dotenv.config({ path: envPath, debug: process.env.DEBUG });
@@ -16,7 +16,7 @@ function loadEnv(mode) {
     load(basePath);
 }
 const envSwitchPlugin = (pluginConfig) => {
-    const { beforeRestart, eventName = 'env-switch' } = pluginConfig;
+    const { beforeRestart, eventName = 'env-switch', root } = pluginConfig;
     return {
         enforce: 'post',
         name: 'vite:env-switch',
@@ -28,7 +28,7 @@ const envSwitchPlugin = (pluginConfig) => {
                 newServer.config.server.open = false;
                 await server.close();
                 // 重新获取环境变量
-                loadEnv(env);
+                loadEnv(root, env);
                 // 兼容 process
                 // @ts-ignore
                 newServer.config.define['process.env'] = process.env;
