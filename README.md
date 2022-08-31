@@ -9,7 +9,8 @@ export default defineConfig({
   //...
   plugins: [
     envSwitchPlugin({
-      eventName: 'env-check'
+      root: __dirname,
+      eventName: 'env-check',
     })
   ]
   //...
