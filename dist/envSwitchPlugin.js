@@ -46,7 +46,7 @@ const envSwitchPlugin = (pluginConfig) => {
                         {
                             tag: 'script',
                             injectTo: 'body',
-                            children: wsPath ? '' : `
+                            children: wsPath ? `
               const ws = new WebSocket('${wsPath}', '${wsProtocol}')
               function handleEnv(env) {
                 ws.send(JSON.stringify({ type: 'custom', event: '${eventName}', data: { env } }))
@@ -56,7 +56,7 @@ const envSwitchPlugin = (pluginConfig) => {
 
                 dom.addEventListener('click', () => handleEnv(dataset.env))
               })
-              `
+              ` : ''
                         },
                         {
                             tag: 'div',
