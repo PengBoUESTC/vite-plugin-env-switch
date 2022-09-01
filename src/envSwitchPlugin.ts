@@ -4,7 +4,10 @@ const dotenv = require('dotenv')
 
 export interface PluginConfig {
   root: string; // __dirname
+  envs: string[];
+  wsPath: string
   eventName?: string
+  wsProtocol?: string
   beforeRestart?: (server, newServer) => void
 }
 
@@ -23,7 +26,7 @@ function loadEnv (path, mode) {
 }
 
 export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
-  const { beforeRestart, eventName = 'env-switch', root } = pluginConfig
+  const { beforeRestart, eventName = 'env-switch', root, wsProtocol = 'vite-hmr', wsPath, envs = [] } = pluginConfig
   return {
     enforce: 'post',
     name: 'vite:env-switch',
@@ -48,5 +51,59 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
         newServer.listen()
       })
     },
+
+    transformIndexHtml: {
+      transform(html: string) {
+        return {
+          html,
+          tags: [
+            {
+              tag: 'script',
+              injectTo: 'body',
+              children: `
+              const ws = new WebSocket(${wsPath}, ${wsProtocol})
+              function handleEnv(env) {
+                ws.send(JSON.stringify({ type: 'custom', event: ${eventName}, data: { env } }))
+              }
+              document.querySelectorAll('.env-btn').forEach(dom => {
+                const { dataset } = dom
+
+                dom.addEventListener('click', () => handleEnv(dataset.env))
+              })
+              `
+            },
+            {
+              tag: 'div',
+              injectTo: 'body',
+              attrs: {
+                class: 'env-btn-wrapper'
+              },
+              children: `
+                ${envs.map(env => {
+                  return `<button class="env-btn" data-env="${env}">${env.slice(0,3)}</button>`
+                })}
+              `
+            },
+            {
+              tag: 'style',
+              injectTo: 'head',
+              children: `
+                .env-btn-wrapper .env-btn{
+                  background-color: pink;
+                  color: red;
+                  border-radius: 4px;
+                  box-shadow: 2px 2px 2px black;
+                }
+                .env-btn-wrapper {
+                  position: fixed;
+                  bottom: 0.7rem;
+                  right: 0.2rem;
+                }
+              `
+            }
+          ]
+        }
+      }
+    }
   }
 }
