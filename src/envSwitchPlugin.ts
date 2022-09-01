@@ -60,7 +60,7 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
             {
               tag: 'script',
               injectTo: 'body',
-              children: `
+              children: wsPath ? '' : `
               const ws = new WebSocket('${wsPath}', '${wsProtocol}')
               function handleEnv(env) {
                 ws.send(JSON.stringify({ type: 'custom', event: '${eventName}', data: { env } }))
@@ -74,20 +74,20 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
             },
             {
               tag: 'div',
-              injectTo: 'body',
+              injectTo: 'body-prepend',
               attrs: {
                 class: 'env-btn-wrapper'
               },
               children: `
                 ${envs.map(env => {
                   return `<button class="env-btn" data-env="${env}">${env.slice(0,3)}</button>`
-                }).join('')}
+                }).join('\n')}
               `
             },
             {
               tag: 'style',
               injectTo: 'head',
-              children: `
+              children: envs.length ? `
                 .env-btn-wrapper .env-btn{
                   background-color: pink;
                   color: red;
@@ -99,7 +99,7 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
                   bottom: 0.7rem;
                   right: 0.2rem;
                 }
-              `
+              ` : ''
             }
           ]
         }

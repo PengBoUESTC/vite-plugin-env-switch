@@ -10,9 +10,12 @@ export default defineConfig({
   //...
   plugins: [
     envSwitchPlugin({
-      root: __dirname,
-      eventName: 'env-check',
-    })
+      wsProtocol: 'vite-hmr', // ws protocol
+      envs: ['prepare', 'development', 'production'], // env vars
+      wsPath: 'xxx', // link
+      root: __dirname, // env config root path
+      eventName: 'env-check'
+    }),
   ]
   //...
 })
@@ -22,7 +25,7 @@ export default defineConfig({
 - <font color="red"> careful about that dont publish these code in production</font>
 
 - add code in index.html, there are three btn to trigger ws event (just for debug)
-
+- these code will be inject by `transformIndexHtml.transform`
 ```html
 <div class="env-btn-wrapper">
   <button class="env-btn" data-env="development">dev</button>
