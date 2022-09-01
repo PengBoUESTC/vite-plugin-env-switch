@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-env-switch",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "vite-plugin"
   ],
   "lint-staged": {
-    "packages/*/{src, types}/**/*.{js,json,ts}": [
+    "src/**/*.{js,json,ts}": [
       "eslint --fix",
       "prettier --write"
     ]

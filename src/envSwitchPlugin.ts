@@ -61,9 +61,9 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
               tag: 'script',
               injectTo: 'body',
               children: `
-              const ws = new WebSocket(${wsPath}, ${wsProtocol})
+              const ws = new WebSocket('${wsPath}', '${wsProtocol}')
               function handleEnv(env) {
-                ws.send(JSON.stringify({ type: 'custom', event: ${eventName}, data: { env } }))
+                ws.send(JSON.stringify({ type: 'custom', event: '${eventName}', data: { env } }))
               }
               document.querySelectorAll('.env-btn').forEach(dom => {
                 const { dataset } = dom
@@ -81,7 +81,7 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
               children: `
                 ${envs.map(env => {
                   return `<button class="env-btn" data-env="${env}">${env.slice(0,3)}</button>`
-                })}
+                }).join('')}
               `
             },
             {
