@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.envSwitchPlugin = void 0;
 const vite_1 = require("vite");
 const path_1 = require("path");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const dotenv = require('dotenv');
 // 获取环境变量
 function loadEnv(path, mode) {
@@ -17,11 +18,13 @@ function loadEnv(path, mode) {
 }
 const envSwitchPlugin = (pluginConfig) => {
     const { beforeRestart, eventName = 'env-switch', root, wsProtocol = 'vite-hmr', wsPath, envs = [] } = pluginConfig;
+    let initMode = '';
     return {
         enforce: 'post',
         name: 'vite:env-switch',
         configureServer(server) {
             const { ws, config } = server;
+            initMode = config.mode;
             ws.on(eventName, async (data) => {
                 const { env } = data;
                 const newServer = await (0, vite_1.createServer)(Object.assign({}, Object.assign({}, config.inlineConfig), { mode: env }));
@@ -30,7 +33,6 @@ const envSwitchPlugin = (pluginConfig) => {
                 // 重新获取环境变量
                 loadEnv(root, env);
                 // 兼容 process
-                // @ts-ignore
                 newServer.config.define['process.env'] = process.env;
                 if (beforeRestart) {
                     await beforeRestart(server, newServer);
@@ -48,13 +50,23 @@ const envSwitchPlugin = (pluginConfig) => {
                             injectTo: 'body',
                             children: wsPath ? `
               const ws = new WebSocket('${wsPath}', '${wsProtocol}')
-              function handleEnv(env) {
+              const btns = document.querySelectorAll('.env-btn')
+              function activeBtn(dom) {
+                curBtn && curBtn.setAttribute('style', "background-color: pink")
+                dom.setAttribute('style', "background-color: #C3E88D")
+                curBtn = dom
+              }
+              let curBtn 
+              function handleEnv(env, dom) {
+                activeBtn(dom)
                 ws.send(JSON.stringify({ type: 'custom', event: '${eventName}', data: { env } }))
               }
-              document.querySelectorAll('.env-btn').forEach(dom => {
+              btns.forEach(dom => {
                 const { dataset } = dom
-
-                dom.addEventListener('click', () => handleEnv(dataset.env))
+                if('${initMode}' == dataset.env) {
+                  activeBtn(dom)
+                }
+                dom.addEventListener('click', () => handleEnv(dataset.env, dom))
               })
               ` : ''
                         },

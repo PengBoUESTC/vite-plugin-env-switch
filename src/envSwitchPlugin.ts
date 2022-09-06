@@ -1,55 +1,65 @@
-import { PluginOption, ViteDevServer, createServer } from 'vite'
-import { resolve } from 'path'
-const dotenv = require('dotenv')
+import { PluginOption, ViteDevServer, createServer } from 'vite';
+import { resolve } from 'path';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const dotenv = require('dotenv');
 
 export interface PluginConfig {
   root: string; // __dirname
   envs: string[];
-  wsPath: string
-  eventName?: string
-  wsProtocol?: string
-  beforeRestart?: (server, newServer) => void
+  wsPath: string;
+  eventName?: string;
+  wsProtocol?: string;
+  beforeRestart?: (server, newServer) => void;
 }
 
 // 获取环境变量
-function loadEnv (path, mode) {
-  const basePath = resolve(path, `.env${mode ? `.${mode}` : ``}`)
-  const localPath = `${basePath}.local`
+function loadEnv(path, mode) {
+  const basePath = resolve(path, `.env${mode ? `.${mode}` : ``}`);
+  const localPath = `${basePath}.local`;
 
-  const load = envPath => {
-    const env = dotenv.config({ path: envPath, debug: process.env.DEBUG })
-    process.env = Object.assign({...process.env}, env.parsed)
-  }
+  const load = (envPath) => {
+    const env = dotenv.config({ path: envPath, debug: process.env.DEBUG });
+    process.env = Object.assign({ ...process.env }, env.parsed);
+  };
 
-  load(localPath)
-  load(basePath)
+  load(localPath);
+  load(basePath);
 }
 
 export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
-  const { beforeRestart, eventName = 'env-switch', root, wsProtocol = 'vite-hmr', wsPath, envs = [] } = pluginConfig
+  const {
+    beforeRestart,
+    eventName = 'env-switch',
+    root,
+    wsProtocol = 'vite-hmr',
+    wsPath,
+    envs = [],
+  } = pluginConfig;
+  let initMode = '';
   return {
     enforce: 'post',
     name: 'vite:env-switch',
 
     configureServer(server: ViteDevServer) {
-      const { ws, config } = server
-
+      const { ws, config } = server;
+      initMode = config.mode;
       ws.on(eventName, async (data) => {
-        const { env } = data
+        const { env } = data;
 
-        const newServer = await createServer(Object.assign({},{...config.inlineConfig}, { mode: env }))
-        newServer.config.server.open = false
-        await server.close()
+        const newServer = await createServer(
+          Object.assign({}, { ...config.inlineConfig }, { mode: env }),
+        );
+        newServer.config.server.open = false;
+        await server.close();
         // 重新获取环境变量
-        loadEnv(root, env)
+        loadEnv(root, env);
         // 兼容 process
-        // @ts-ignore
-        newServer.config.define['process.env'] = process.env
-        if(beforeRestart) {
-          await beforeRestart(server, newServer)
+        newServer.config.define['process.env'] = process.env;
+        if (beforeRestart) {
+          await beforeRestart(server, newServer);
         }
-        newServer.listen()
-      })
+        newServer.listen();
+      });
     },
 
     transformIndexHtml: {
@@ -60,34 +70,52 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
             {
               tag: 'script',
               injectTo: 'body',
-              children: wsPath ? `
+              children: wsPath
+                ? `
               const ws = new WebSocket('${wsPath}', '${wsProtocol}')
-              function handleEnv(env) {
+              const btns = document.querySelectorAll('.env-btn')
+              function activeBtn(dom) {
+                curBtn && curBtn.setAttribute('style', "background-color: pink")
+                dom.setAttribute('style', "background-color: #C3E88D")
+                curBtn = dom
+              }
+              let curBtn 
+              function handleEnv(env, dom) {
+                activeBtn(dom)
                 ws.send(JSON.stringify({ type: 'custom', event: '${eventName}', data: { env } }))
               }
-              document.querySelectorAll('.env-btn').forEach(dom => {
+              btns.forEach(dom => {
                 const { dataset } = dom
-
-                dom.addEventListener('click', () => handleEnv(dataset.env))
+                if('${initMode}' == dataset.env) {
+                  activeBtn(dom)
+                }
+                dom.addEventListener('click', () => handleEnv(dataset.env, dom))
               })
-              ` : ''
+              `
+                : '',
             },
             {
               tag: 'div',
               injectTo: 'body-prepend',
               attrs: {
-                class: 'env-btn-wrapper'
+                class: 'env-btn-wrapper',
               },
               children: `
-                ${envs.map(env => {
-                  return `<button class="env-btn" data-env="${env}">${env.slice(0,3)}</button>`
-                }).join('\n')}
-              `
+                ${envs
+                  .map((env) => {
+                    return `<button class="env-btn" data-env="${env}">${env.slice(
+                      0,
+                      3,
+                    )}</button>`;
+                  })
+                  .join('\n')}
+              `,
             },
             {
               tag: 'style',
               injectTo: 'head',
-              children: envs.length ? `
+              children: envs.length
+                ? `
                 .env-btn-wrapper .env-btn{
                   background-color: pink;
                   color: red;
@@ -99,11 +127,12 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
                   bottom: 0.7rem;
                   right: 0.2rem;
                 }
-              ` : ''
-            }
-          ]
-        }
-      }
-    }
-  }
-}
+              `
+                : '',
+            },
+          ],
+        };
+      },
+    },
+  };
+};
