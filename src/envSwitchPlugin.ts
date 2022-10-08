@@ -36,15 +36,14 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
     envs = [],
   } = pluginConfig;
   let initMode = '';
-  let isBuild = false;
+
   return {
     enforce: 'post',
     name: 'vite:env-switch',
-
+    apply: 'serve',
     configureServer(server: ViteDevServer) {
       const { ws, config } = server;
-      isBuild = config.command === 'build';
-      if (isBuild) return;
+
       initMode = config.mode;
 
       ws.on(eventName, async (data) => {
@@ -68,8 +67,6 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
 
     transformIndexHtml: {
       transform(html: string) {
-        if (isBuild) return { html, tags: [] };
-
         return {
           html,
           tags: [
