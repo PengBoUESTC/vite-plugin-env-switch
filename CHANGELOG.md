@@ -1,0 +1,22 @@
+# 1.2.0 (2022-10-08)
+
+
+### Bug Fixes
+
+* render btn before inject script ([38cb72f](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/38cb72f5a7d262d30670549de4363d855df66741))
+* string ([bde343e](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/bde343e3e4120bc70b0bf88e9d3c8c7348a46ea4))
+
+
+### Features
+
+* 自动注入html ([aa768d4](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/aa768d4006ff7d9891d6429b9293da7f4aec387d))
+* add release ([24bc443](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/24bc443f9952764e57172aef877e6f600bc7653c))
+* build ([7f921b9](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/7f921b94097543ac1ac50f351cf0642e755b2750))
+* env path ([3b62a91](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/3b62a914ff0a446cad12ac4985226598c0f17340))
+* exclude build command ([bacc66e](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/bacc66ec0bd684f6a6c429c22bbb79902046def9))
+* init ([386972f](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/386972f43b3d4fe4a3abdc20ea714738266712e3))
+* readme ([24c27a0](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/24c27a0b3512e921a0fe36fbe0acd6ad13eb0a6b))
+* release branch master to main ([0c4c3d8](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/0c4c3d8a3c3fe64fd295dd3dcf995385b6e8ea6f))
+
+
+
