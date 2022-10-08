@@ -19,15 +19,12 @@ function loadEnv(path, mode) {
 const envSwitchPlugin = (pluginConfig) => {
     const { beforeRestart, eventName = 'env-switch', root, wsProtocol = 'vite-hmr', wsPath, envs = [], } = pluginConfig;
     let initMode = '';
-    let isBuild = false;
     return {
         enforce: 'post',
         name: 'vite:env-switch',
+        apply: 'serve',
         configureServer(server) {
             const { ws, config } = server;
-            isBuild = config.command === 'build';
-            if (isBuild)
-                return;
             initMode = config.mode;
             ws.on(eventName, async (data) => {
                 const { env } = data;
@@ -46,8 +43,6 @@ const envSwitchPlugin = (pluginConfig) => {
         },
         transformIndexHtml: {
             transform(html) {
-                if (isBuild)
-                    return { html, tags: [] };
                 return {
                     html,
                     tags: [
