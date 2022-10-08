@@ -36,8 +36,8 @@ const getReleaseBranch = async () => {
 async function main() {
   step('release...');
   const curBranch = await getReleaseBranch();
-  if(curBranch !== 'master') {
-    throw new Error(`release only for master; current branch is ${curBranch}`);
+  if(curBranch !== 'main') {
+    throw new Error(`release only for main; current branch is ${curBranch}`);
   }
   let targetVersion = args._[0];
 
@@ -95,7 +95,7 @@ async function main() {
 
   step('\nPushing to GitHub...');
   await run('git', ['tag', `v${targetVersion}`]);
-  await run('git', ['push', 'origin', 'master']);
+  await run('git', ['push', 'origin', 'main']);
   step('\nDONE');
 }
 
