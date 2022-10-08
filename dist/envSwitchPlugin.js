@@ -9,7 +9,7 @@ const dotenv = require('dotenv');
 function loadEnv(path, mode) {
     const basePath = (0, path_1.resolve)(path, `.env${mode ? `.${mode}` : ``}`);
     const localPath = `${basePath}.local`;
-    const load = envPath => {
+    const load = (envPath) => {
         const env = dotenv.config({ path: envPath, debug: process.env.DEBUG });
         process.env = Object.assign(Object.assign({}, process.env), env.parsed);
     };
@@ -17,13 +17,17 @@ function loadEnv(path, mode) {
     load(basePath);
 }
 const envSwitchPlugin = (pluginConfig) => {
-    const { beforeRestart, eventName = 'env-switch', root, wsProtocol = 'vite-hmr', wsPath, envs = [] } = pluginConfig;
+    const { beforeRestart, eventName = 'env-switch', root, wsProtocol = 'vite-hmr', wsPath, envs = [], } = pluginConfig;
     let initMode = '';
+    let isBuild = false;
     return {
         enforce: 'post',
         name: 'vite:env-switch',
         configureServer(server) {
             const { ws, config } = server;
+            isBuild = config.command === 'build';
+            if (isBuild)
+                return;
             initMode = config.mode;
             ws.on(eventName, async (data) => {
                 const { env } = data;
@@ -42,13 +46,16 @@ const envSwitchPlugin = (pluginConfig) => {
         },
         transformIndexHtml: {
             transform(html) {
+                if (isBuild)
+                    return { html, tags: [] };
                 return {
                     html,
                     tags: [
                         {
                             tag: 'script',
                             injectTo: 'body',
-                            children: wsPath ? `
+                            children: wsPath
+                                ? `
               const ws = new WebSocket('${wsPath}', '${wsProtocol}')
               const btns = document.querySelectorAll('.env-btn')
               function activeBtn(dom) {
@@ -68,24 +75,28 @@ const envSwitchPlugin = (pluginConfig) => {
                 }
                 dom.addEventListener('click', () => handleEnv(dataset.env, dom))
               })
-              ` : ''
+              `
+                                : '',
                         },
                         {
                             tag: 'div',
                             injectTo: 'body-prepend',
                             attrs: {
-                                class: 'env-btn-wrapper'
+                                class: 'env-btn-wrapper',
                             },
                             children: `
-                ${envs.map(env => {
+                ${envs
+                                .map((env) => {
                                 return `<button class="env-btn" data-env="${env}">${env.slice(0, 3)}</button>`;
-                            }).join('\n')}
-              `
+                            })
+                                .join('\n')}
+              `,
                         },
                         {
                             tag: 'style',
                             injectTo: 'head',
-                            children: envs.length ? `
+                            children: envs.length
+                                ? `
                 .env-btn-wrapper .env-btn{
                   background-color: pink;
                   color: red;
@@ -97,12 +108,13 @@ const envSwitchPlugin = (pluginConfig) => {
                   bottom: 0.7rem;
                   right: 0.2rem;
                 }
-              ` : ''
-                        }
-                    ]
+              `
+                                : '',
+                        },
+                    ],
                 };
-            }
-        }
+            },
+        },
     };
 };
 exports.envSwitchPlugin = envSwitchPlugin;
