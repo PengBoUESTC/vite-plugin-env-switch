@@ -4,7 +4,9 @@
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "rimraf -rf dist && tsc"
+    "build": "rimraf -rf dist && tsc",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "release": "node scripts/release"
   },
   "keywords": [
     "node",
@@ -35,6 +37,7 @@
     "@typescript-eslint/eslint-plugin": "^5.36.0",
     "@typescript-eslint/parser": "^5.36.0",
     "chalk": "^5.1.0",
+    "conventional-changelog-cli": "^2.2.2",
     "enquirer": "^2.3.6",
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.3.0",
