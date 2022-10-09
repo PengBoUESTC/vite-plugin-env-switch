@@ -1,3 +1,12 @@
+## [1.2.2](https://github.com/PengBoUESTC/vite-plugin-env-switch/compare/v1.2.1...v1.2.2) (2022-10-09)
+
+
+### Features
+
+* add release-pkg ([71c3ee0](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/71c3ee04d68858fde8d575018a98c5b1ebe71cc4))
+
+
+
 ## [1.2.1](https://github.com/PengBoUESTC/vite-plugin-env-switch/compare/v1.2.0...v1.2.1) (2022-10-08)
 
 
