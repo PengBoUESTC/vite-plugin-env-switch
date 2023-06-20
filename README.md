@@ -1,6 +1,10 @@
 # vite-plugin-env-switch
 vite-plugin-env-switch
 
+![截屏2023-06-20 下午8 40 39](https://github.com/PengBoUESTC/vite-plugin-env-switch/assets/57180744/d7fe11f8-4661-462f-aa7f-01006e55f55e)
+
+**U can switch the server env by click the btns on page, and dont need to restart your server by CMD.**
+
 ## change the server env 
 
 - vite.config.ts
