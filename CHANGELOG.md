@@ -1,3 +1,12 @@
+## [1.3.1](https://github.com/PengBoUESTC/vite-plugin-env-switch/compare/v1.2.2...v1.3.1) (2024-02-23)
+
+
+### Features
+
+* remove dotenv ([146c519](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/146c51935d194e4485a9e0d7321eeab3beb90301))
+
+
+
 # [1.3.0](https://github.com/PengBoUESTC/vite-plugin-env-switch/compare/v1.2.2...v1.3.0) (2024-02-23)
 
 
