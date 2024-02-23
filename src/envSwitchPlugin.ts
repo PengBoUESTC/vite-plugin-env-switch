@@ -119,7 +119,7 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
               injectTo: 'head',
               children: envs.length
                 ? `
-                .env-btn-wrapper .env-btn{
+                .env-btn-wrapper .env-btn {
                   background-color: pink;
                   color: red;
                   border-radius: 4px;
@@ -129,6 +129,7 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
                   position: fixed;
                   bottom: 0.7rem;
                   right: 0.2rem;
+                  z-index: 1000;
                 }
               `
                 : '',
