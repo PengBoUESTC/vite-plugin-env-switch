@@ -1,0 +1,19 @@
+.env-btn-wrapper .env-btn {
+  margin: 3px;
+  background-color: pink;
+  color: red;
+  border-radius: 4px;
+  box-shadow: 2px 2px 2px black;
+}
+.env-btn-wrapper {
+  position: fixed;
+  bottom: 0.7rem;
+  right: 0.2rem;
+  z-index: 100000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;       
+  height: 28px;
+  max-width: 138px;
+}

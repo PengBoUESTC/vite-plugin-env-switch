@@ -1,4 +1,6 @@
 import { PluginOption, ViteDevServer, createServer } from 'vite';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 export interface PluginConfig {
   root: string; // __dirname
@@ -8,6 +10,10 @@ export interface PluginConfig {
   wsProtocol?: string;
   beforeRestart?: (server, newServer) => void;
 }
+
+const bindMoveStr = readFileSync(resolve(__dirname, './bindmove.js'));
+const scriptStr = readFileSync(resolve(__dirname, './script.js'));
+const cssStr = readFileSync(resolve(__dirname, '../src/css.css'));
 
 export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
   const {
@@ -53,25 +59,10 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
               injectTo: 'body',
               children: wsPath
                 ? `
-              const ws = new WebSocket('${wsPath}', '${wsProtocol}')
-              const btns = document.querySelectorAll('.env-btn')
-              function activeBtn(dom) {
-                curBtn && curBtn.setAttribute('style', "background-color: pink")
-                dom.setAttribute('style', "background-color: #C3E88D")
-                curBtn = dom
-              }
-              let curBtn 
-              function handleEnv(env, dom) {
-                activeBtn(dom)
-                ws.send(JSON.stringify({ type: 'custom', event: '${eventName}', data: { env } }))
-              }
-              btns.forEach(dom => {
-                const { dataset } = dom
-                if('${initMode}' == dataset.env) {
-                  activeBtn(dom)
-                }
-                dom.addEventListener('click', () => handleEnv(dataset.env, dom))
-              })
+                ${scriptStr};
+                init('${wsPath}', '${wsProtocol}', '${initMode}', '${eventName}');
+                ${bindMoveStr};
+                bindMove('.env-btn-wrapper');
               `
                 : '',
             },
@@ -95,22 +86,7 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
             {
               tag: 'style',
               injectTo: 'head',
-              children: envs.length
-                ? `
-                .env-btn-wrapper .env-btn {
-                  background-color: pink;
-                  color: red;
-                  border-radius: 4px;
-                  box-shadow: 2px 2px 2px black;
-                }
-                .env-btn-wrapper {
-                  position: fixed;
-                  bottom: 0.7rem;
-                  right: 0.2rem;
-                  z-index: 100000;
-                }
-              `
-                : '',
+              children: envs.length ? `${cssStr}` : '',
             },
           ],
         };

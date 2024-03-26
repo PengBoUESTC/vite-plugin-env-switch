@@ -2,6 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.envSwitchPlugin = void 0;
 const vite_1 = require("vite");
+const fs_1 = require("fs");
+const path_1 = require("path");
+const bindMoveStr = (0, fs_1.readFileSync)((0, path_1.resolve)(__dirname, './bindmove.js'));
+const scriptStr = (0, fs_1.readFileSync)((0, path_1.resolve)(__dirname, './script.js'));
+const cssStr = (0, fs_1.readFileSync)((0, path_1.resolve)(__dirname, '../src/css.css'));
 const envSwitchPlugin = (pluginConfig) => {
     const { beforeRestart, eventName = 'env-switch', wsProtocol = 'vite-hmr', wsPath, envs = [], } = pluginConfig;
     let initMode = '';
@@ -33,25 +38,10 @@ const envSwitchPlugin = (pluginConfig) => {
                             injectTo: 'body',
                             children: wsPath
                                 ? `
-              const ws = new WebSocket('${wsPath}', '${wsProtocol}')
-              const btns = document.querySelectorAll('.env-btn')
-              function activeBtn(dom) {
-                curBtn && curBtn.setAttribute('style', "background-color: pink")
-                dom.setAttribute('style', "background-color: #C3E88D")
-                curBtn = dom
-              }
-              let curBtn 
-              function handleEnv(env, dom) {
-                activeBtn(dom)
-                ws.send(JSON.stringify({ type: 'custom', event: '${eventName}', data: { env } }))
-              }
-              btns.forEach(dom => {
-                const { dataset } = dom
-                if('${initMode}' == dataset.env) {
-                  activeBtn(dom)
-                }
-                dom.addEventListener('click', () => handleEnv(dataset.env, dom))
-              })
+                ${scriptStr};
+                init('${wsPath}', '${wsProtocol}', '${initMode}', '${eventName}');
+                ${bindMoveStr};
+                bindMove('.env-btn-wrapper');
               `
                                 : '',
                         },
@@ -72,22 +62,7 @@ const envSwitchPlugin = (pluginConfig) => {
                         {
                             tag: 'style',
                             injectTo: 'head',
-                            children: envs.length
-                                ? `
-                .env-btn-wrapper .env-btn {
-                  background-color: pink;
-                  color: red;
-                  border-radius: 4px;
-                  box-shadow: 2px 2px 2px black;
-                }
-                .env-btn-wrapper {
-                  position: fixed;
-                  bottom: 0.7rem;
-                  right: 0.2rem;
-                  z-index: 100000;
-                }
-              `
-                                : '',
+                            children: envs.length ? `${cssStr}` : '',
                         },
                     ],
                 };
