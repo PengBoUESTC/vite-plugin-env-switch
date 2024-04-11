@@ -7,7 +7,7 @@ const path_1 = require("path");
 const script_1 = require("./script");
 const cssStr = (0, fs_1.readFileSync)((0, path_1.resolve)(__dirname, '../src/css.css'));
 const envSwitchPlugin = (pluginConfig) => {
-    const { beforeRestart, eventName = 'env-switch', wsProtocol = 'vite-hmr', wsPath, envs = [], extraClass = '' } = pluginConfig;
+    const { beforeRestart, eventName = 'env-switch', wsProtocol = 'vite-hmr', wsPath, envs = [], extraClass = '', } = pluginConfig;
     let initMode = '';
     return {
         enforce: 'post',
