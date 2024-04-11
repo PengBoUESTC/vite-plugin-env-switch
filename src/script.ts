@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function init(wsPath, wsProtocol, initMode, eventName) {
+export default function init(wsPath, wsProtocol, initMode, eventName) {
   const ws = new WebSocket(wsPath, wsProtocol);
   const btns = document.querySelectorAll('.env-btn');
   let curBtn;

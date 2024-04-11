@@ -4,11 +4,10 @@ exports.envSwitchPlugin = void 0;
 const vite_1 = require("vite");
 const fs_1 = require("fs");
 const path_1 = require("path");
-const bindMoveStr = (0, fs_1.readFileSync)((0, path_1.resolve)(__dirname, './bindmove.js'));
-const scriptStr = (0, fs_1.readFileSync)((0, path_1.resolve)(__dirname, './script.js'));
+const script_1 = require("./script");
 const cssStr = (0, fs_1.readFileSync)((0, path_1.resolve)(__dirname, '../src/css.css'));
 const envSwitchPlugin = (pluginConfig) => {
-    const { beforeRestart, eventName = 'env-switch', wsProtocol = 'vite-hmr', wsPath, envs = [], } = pluginConfig;
+    const { beforeRestart, eventName = 'env-switch', wsProtocol = 'vite-hmr', wsPath, envs = [], extraClass = '' } = pluginConfig;
     let initMode = '';
     return {
         enforce: 'post',
@@ -38,10 +37,8 @@ const envSwitchPlugin = (pluginConfig) => {
                             injectTo: 'body',
                             children: wsPath
                                 ? `
-                ${scriptStr};
+                const init = ${script_1.default.toString()};
                 init('${wsPath}', '${wsProtocol}', '${initMode}', '${eventName}');
-                ${bindMoveStr};
-                bindMove('.env-btn-wrapper');
               `
                                 : '',
                         },
@@ -49,7 +46,7 @@ const envSwitchPlugin = (pluginConfig) => {
                             tag: 'div',
                             injectTo: 'body-prepend',
                             attrs: {
-                                class: 'env-btn-wrapper',
+                                class: `${extraClass} env-btn-wrapper`,
                             },
                             children: `
                 ${envs

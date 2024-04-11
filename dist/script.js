@@ -1,4 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 function init(wsPath, wsProtocol, initMode, eventName) {
     const ws = new WebSocket(wsPath, wsProtocol);
     const btns = document.querySelectorAll('.env-btn');
@@ -24,3 +25,4 @@ function init(wsPath, wsProtocol, initMode, eventName) {
         dom.addEventListener('click', () => handleEnv(dataset.env, dom));
     });
 }
+exports.default = init;

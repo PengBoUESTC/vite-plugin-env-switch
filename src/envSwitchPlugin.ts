@@ -1,6 +1,7 @@
 import { PluginOption, ViteDevServer, createServer } from 'vite';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+import init from './script';
 
 export interface PluginConfig {
   root: string; // __dirname
@@ -8,11 +9,10 @@ export interface PluginConfig {
   wsPath: string;
   eventName?: string;
   wsProtocol?: string;
+  extraClass?: string;
   beforeRestart?: (server, newServer) => void;
 }
 
-const bindMoveStr = readFileSync(resolve(__dirname, './bindmove.js'));
-const scriptStr = readFileSync(resolve(__dirname, './script.js'));
 const cssStr = readFileSync(resolve(__dirname, '../src/css.css'));
 
 export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
@@ -22,6 +22,7 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
     wsProtocol = 'vite-hmr',
     wsPath,
     envs = [],
+    extraClass = '',
   } = pluginConfig;
   let initMode = '';
 
@@ -59,10 +60,8 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
               injectTo: 'body',
               children: wsPath
                 ? `
-                ${scriptStr};
+                const init = ${init.toString()};
                 init('${wsPath}', '${wsProtocol}', '${initMode}', '${eventName}');
-                ${bindMoveStr};
-                bindMove('.env-btn-wrapper');
               `
                 : '',
             },
@@ -70,7 +69,7 @@ export const envSwitchPlugin = (pluginConfig: PluginConfig): PluginOption => {
               tag: 'div',
               injectTo: 'body-prepend',
               attrs: {
-                class: 'env-btn-wrapper',
+                class: `${extraClass} env-btn-wrapper`,
               },
               children: `
                 ${envs
