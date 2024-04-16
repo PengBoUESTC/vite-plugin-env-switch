@@ -1,3 +1,18 @@
+## [1.5.1](https://github.com/PengBoUESTC/vite-plugin-env-switch/compare/v1.2.2...v1.5.1) (2024-04-16)
+
+
+### Bug Fixes
+
+* remove space ([4bc1d7d](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/4bc1d7d093c7d12b0f1386877ebfefe0a22c3729))
+
+
+### Features
+
+* remove dotenv ([146c519](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/146c51935d194e4485a9e0d7321eeab3beb90301))
+* support move ([ccb0929](https://github.com/PengBoUESTC/vite-plugin-env-switch/commit/ccb0929706b5fc76a0eab8f87158da8bde1faa6d))
+
+
+
 # [1.5.0](https://github.com/PengBoUESTC/vite-plugin-env-switch/compare/v1.2.2...v1.5.0) (2024-04-11)
 
 
