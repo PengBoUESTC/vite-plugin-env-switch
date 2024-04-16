@@ -46,7 +46,9 @@ const envSwitchPlugin = (pluginConfig) => {
                             tag: 'div',
                             injectTo: 'body-prepend',
                             attrs: {
-                                class: `${extraClass} env-btn-wrapper`,
+                                class: [extraClass, 'env-btn-wrapper']
+                                    .filter((cls) => !!cls)
+                                    .join(' '),
                             },
                             children: `
                 ${envs
